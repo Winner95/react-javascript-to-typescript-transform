@@ -17,7 +17,7 @@ export type Factory = ts.TransformerFactory<ts.SourceFile>;
  * // const Hello = ({ message }) => <div>hello {message}</div>
  *
  * Hello.propTypes = {
- *   message: React.PropTypes.string,
+ *   message: PropTypes.string,
  * }
  *
  * After:
@@ -25,12 +25,12 @@ export type Factory = ts.TransformerFactory<ts.SourceFile>;
  *   message: string;
  * }
  *
- * const Hello: React.SFC<HelloProps> = ({ message }) => {
+ * const Hello: React.FunctionComponent<HelloProps> = ({ message }) => {
  *   return <div>hello {message}</div>
  * }
  *
  * Hello.propTypes = {
- *   message: React.PropTypes.string,
+ *   message: PropTypes.string,
  * }
  */
 export function reactStatelessFunctionMakePropsTransformFactoryFactory(typeChecker: ts.TypeChecker): Factory {
@@ -83,9 +83,10 @@ function visitReactStatelessComponent(
     const propTypeDeclaration = ts.createTypeAliasDeclaration([], [], propTypeName, [], propType);
     const propTypeRef = ts.createTypeReferenceNode(propTypeName, []);
 
-    let componentType = ts.createTypeReferenceNode(ts.createQualifiedName(ts.createIdentifier('React'), 'SFC'), [
-        shouldMakePropTypeDeclaration ? propTypeRef : propType,
-    ]);
+    let componentType = ts.createTypeReferenceNode(
+        ts.createQualifiedName(ts.createIdentifier('React'), 'FunctionComponent'),
+        [shouldMakePropTypeDeclaration ? propTypeRef : propType],
+    );
 
     // replace component with ts stateless component
     const typedComponent = ts.createVariableStatement(

@@ -1,6 +1,6 @@
 type HelloProps = {
     message?: string,
 };
-const Hello: React.SFC<HelloProps> = ({ message }) => {
+const Hello: React.FunctionComponent<HelloProps> = ({ message }) => {
     return <div>hello {message}</div>;
 };
